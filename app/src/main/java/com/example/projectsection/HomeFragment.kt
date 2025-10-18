@@ -58,7 +58,6 @@ class HomeFragment : Fragment() {
     private fun setupButtons(view: View) {
         val browseProductsButton: Button = view.findViewById(R.id.btn_browse_products)
         val farmingTipsButton: Button = view.findViewById(R.id.btn_farming_tips)
-        val quickOrderButton: Button = view.findViewById(R.id.btn_quick_order)
 
         browseProductsButton.setOnClickListener {
             startActivity(Intent(requireContext(), ProductsActivity::class.java))
@@ -66,10 +65,6 @@ class HomeFragment : Fragment() {
 
         farmingTipsButton.setOnClickListener {
             startActivity(Intent(requireContext(), TipsActivity::class.java))
-        }
-
-        quickOrderButton.setOnClickListener {
-            Toast.makeText(requireContext(), "Quick Order feature coming soon!", Toast.LENGTH_SHORT).show()
         }
     }
 

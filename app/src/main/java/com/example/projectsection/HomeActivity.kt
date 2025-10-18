@@ -28,9 +28,18 @@ class HomeActivity : AppCompatActivity() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
         setupBottomNavigation()
 
+        // Check if we should show profile (from other activities)
+        val showProfile = intent.getBooleanExtra("show_profile", false)
+        
         // Load default fragment
         if (savedInstanceState == null) {
-            loadFragment(HomeFragment())
+            if (showProfile) {
+                loadFragment(ProfileFragment())
+                bottomNavigation.selectedItemId = R.id.nav_profile
+            } else {
+                loadFragment(HomeFragment())
+                bottomNavigation.selectedItemId = R.id.nav_home
+            }
         }
     }
 

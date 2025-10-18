@@ -6,12 +6,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class TipsActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var tipAdapter: TipAdapter
     private val allTips = getMockTips() // Mock data source
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +22,13 @@ class TipsActivity : AppCompatActivity() {
 
 
         recyclerView = findViewById(R.id.tips_recycler_view)
+        bottomNavigation = findViewById(R.id.bottom_navigation)
+
         setupRecyclerView()
+        setupBottomNavigation()
+
+        // Set tips as selected in bottom navigation
+        bottomNavigation.selectedItemId = R.id.nav_tips
     }
 
 
@@ -62,5 +70,34 @@ class TipsActivity : AppCompatActivity() {
             Tip(11, "Beneficial Insects", "Attract pollinators like bees and butterflies by planting a variety of flowers. These insects are essential for the pollination of many fruit and vegetable crops.", "Pollination"),
             Tip(12, "Composting Basics", "Start a compost pile with a mix of 'green' materials (like kitchen scraps and grass clippings) and 'brown' materials (like dried leaves and small twigs) to create a nutrient-rich soil amendment for free.", "Soil Health")
         )
+    }
+
+    private fun setupBottomNavigation() {
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_products -> {
+                    startActivity(Intent(this, ProductsActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_tips -> {
+                    // Already on tips page
+                    true
+                }
+                R.id.nav_profile -> {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.putExtra("show_profile", true)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }

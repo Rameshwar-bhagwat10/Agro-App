@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -20,6 +21,7 @@ class ProductsActivity : AppCompatActivity() {
     private lateinit var productAdapter: ProductAdapter
     private var allProductsFromDb: List<Product> = emptyList()
     private lateinit var productDao: ProductDao
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +34,15 @@ class ProductsActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.product_recycler_view)
         categorySpinner = findViewById(R.id.category_spinner)
+        bottomNavigation = findViewById(R.id.bottom_navigation)
 
         setupRecyclerView()
         setupCategorySpinner()
+        setupBottomNavigation()
         observeProducts()
+
+        // Set products as selected in bottom navigation
+        bottomNavigation.selectedItemId = R.id.nav_products
     }
 
 
@@ -84,5 +91,34 @@ class ProductsActivity : AppCompatActivity() {
             allProductsFromDb.filter { it.category == category }
         }
         productAdapter.updateProducts(filteredList)
+    }
+
+    private fun setupBottomNavigation() {
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_products -> {
+                    // Already on products page
+                    true
+                }
+                R.id.nav_tips -> {
+                    startActivity(Intent(this, TipsActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_profile -> {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.putExtra("show_profile", true)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }
