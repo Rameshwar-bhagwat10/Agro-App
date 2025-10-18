@@ -13,9 +13,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label=""
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/agroapplogo_round"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/agroapplogo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectSection"
         tools:targetApi="31">
@@ -36,6 +36,8 @@
         <activity android:name=".ProductDetailsActivity" android:exported="false" />
         <activity android:name=".TipsActivity" android:exported="false" />
         <activity android:name=".TipDetailsActivity" android:exported="false" />
+        <activity android:name=".FirebaseTestActivity" android:exported="false" />
 
     </application>
 </manifest>
+

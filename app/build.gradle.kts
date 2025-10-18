@@ -3,14 +3,15 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("kotlin-kapt") // For Room annotation processing
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.projectsection"
+    namespace = "com.example.agrokrishiseva"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.projectsection"
+        applicationId = "com.example.agrokrishiseva"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -62,6 +63,11 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

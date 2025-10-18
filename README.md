@@ -1,4 +1,4 @@
-# Agro Seva Kendra - Agricultural App
+# Agro Krishi - Agricultural App
 
 A comprehensive agricultural application built with Kotlin for Android, designed to help farmers with products, tips, and weather information.
 
@@ -95,4 +95,4 @@ A comprehensive agricultural application built with Kotlin for Android, designed
 
 ---
 
-**Built with ❤️ for farmers by the Agro Seva Kendra team**
+**Built with ❤️ for farmers by the Agro Krishi team**
