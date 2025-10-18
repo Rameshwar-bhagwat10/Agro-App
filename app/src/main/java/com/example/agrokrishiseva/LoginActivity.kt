@@ -20,6 +20,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var registerTextView: TextView
+    private lateinit var adminAccessTextView: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var auth: FirebaseAuth
@@ -48,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
         passwordEditText = findViewById(R.id.et_password)
         loginButton = findViewById(R.id.btn_login)
         registerTextView = findViewById(R.id.tv_register)
+        adminAccessTextView = findViewById(R.id.tv_admin_access)
         progressBar = findViewById(R.id.progress_bar)
     }
 
@@ -59,10 +61,33 @@ class LoginActivity : AppCompatActivity() {
         registerTextView.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+
+        adminAccessTextView.setOnClickListener {
+            startActivity(Intent(this, com.example.agrokrishiseva.admin.AdminLoginActivity::class.java))
+        }
         
         // Add Firebase test button (temporary - remove after testing)
         findViewById<TextView>(R.id.tv_register).setOnLongClickListener {
             startActivity(Intent(this, FirebaseTestActivity::class.java))
+            true
+        }
+        
+        // Add admin access - triple tap on login button
+        var tapCount = 0
+        var lastTapTime = 0L
+        loginButton.setOnLongClickListener {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTapTime < 500) {
+                tapCount++
+            } else {
+                tapCount = 1
+            }
+            lastTapTime = currentTime
+            
+            if (tapCount >= 3) {
+                startActivity(Intent(this, com.example.agrokrishiseva.admin.AdminLoginActivity::class.java))
+                tapCount = 0
+            }
             true
         }
     }

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@color/white">
+
+    <!-- Admin Logo/Title -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="24dp"
+        android:background="@mipmap/agroapplogo_round" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Admin Panel"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/design_default_color_primary"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AgroKrishi Seva"
+        android:textSize="16sp"
+        android:textColor="@color/design_default_color_on_surface"
+        android:layout_marginBottom="16dp" />
+
+
+    <!-- Login Form -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxStrokeColor="@color/design_default_color_primary"
+                app:hintTextColor="@color/design_default_color_primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_admin_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Admin Email"
+                    android:inputType="textEmailAddress"
+                    android:drawableStart="@android:drawable/ic_dialog_email"
+                    android:drawablePadding="12dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:boxStrokeColor="@color/design_default_color_primary"
+                app:hintTextColor="@color/design_default_color_primary"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_admin_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:drawableStart="@android:drawable/ic_lock_lock"
+                    android:drawablePadding="12dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Quick Fill Button -->
+            <Button
+                android:id="@+id/btn_quick_fill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Quick Fill (Demo)"
+                android:textSize="12sp"
+                android:layout_marginBottom="16dp"
+                style="@style/Widget.Material3.Button.OutlinedButton" />
+
+            <Button
+                android:id="@+id/btn_admin_login"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Login as Admin"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/design_default_color_primary" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="16dp" />
+
+    <!-- Back to User Login -->
+    <TextView
+        android:id="@+id/tv_back_to_user_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← Back to User Login"
+        android:textColor="@color/design_default_color_primary"
+        android:textSize="14sp"
+        android:layout_marginTop="24dp"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground" />
+
+</LinearLayout>

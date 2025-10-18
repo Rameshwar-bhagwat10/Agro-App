@@ -96,3 +96,39 @@ A comprehensive agricultural application built with Kotlin for Android, designed
 ---
 
 **Built with ❤️ for farmers by the Agro Krishi team**
+
+## 👨‍💼 Admin Panel
+
+### Admin Authentication
+- **Secure Admin Login**: Firebase Authentication with admin role verification
+- **Admin Access Control**: Only predefined admin emails can access the panel
+- **Session Management**: Secure admin session handling
+
+### Admin Dashboard
+- **User Statistics**: View total users, active users, and analytics
+- **Quick Actions**: Access to user management, reports, and system settings
+- **Real-time Data**: Live statistics from Firebase Firestore
+
+### Admin Features
+- **User Management**: View and manage user accounts (coming soon)
+- **Analytics & Reports**: Usage statistics and reports (coming soon)  
+- **System Settings**: Configure app settings (coming soon)
+
+### Admin Access
+1. **From Login Screen**: Click "Admin Access" link
+2. **Admin Credentials**: Use predefined admin accounts:
+   - **Email**: `admin@agrokrishiseva.com` | **Password**: `admin123`
+   - **Email**: `superadmin@agrokrishiseva.com` | **Password**: `super123`
+3. **Quick Demo**: Use "Quick Fill (Demo)" button for instant credential filling
+4. **Auto-Creation**: Admin accounts are automatically created in Firebase if they don't exist
+
+### Admin Configuration
+To add new admin users:
+1. Add email to `AdminManager.ADMIN_EMAILS` set
+2. Or create document in Firestore `admins` collection:
+   ```json
+   {
+     "email": "newadmin@example.com",
+     "isActive": true
+   }
+   ```
