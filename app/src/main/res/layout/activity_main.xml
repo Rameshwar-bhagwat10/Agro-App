@@ -9,13 +9,7 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome to Agro Seva Kendra"
-        android:textAppearance="?attr/textAppearanceHeadline4"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

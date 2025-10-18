@@ -25,6 +25,8 @@ class ProductsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
 
+
+
         // Get the DAO instance
         productDao = AppDatabase.getDatabase(this).productDao()
 
@@ -35,6 +37,8 @@ class ProductsActivity : AppCompatActivity() {
         setupCategorySpinner()
         observeProducts()
     }
+
+
 
     private fun setupRecyclerView() {
         // Initialize adapter with an empty list

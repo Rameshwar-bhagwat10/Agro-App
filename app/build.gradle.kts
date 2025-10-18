@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
+    implementation("androidx.cardview:cardview:1.0.0")
 
     // Location Services
     implementation("com.google.android.gms:play-services-location:21.0.1")

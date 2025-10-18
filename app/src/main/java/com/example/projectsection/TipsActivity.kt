@@ -17,9 +17,13 @@ class TipsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tips)
 
+
+
         recyclerView = findViewById(R.id.tips_recycler_view)
         setupRecyclerView()
     }
+
+
 
     private fun setupRecyclerView() {
         tipAdapter = TipAdapter(allTips,
