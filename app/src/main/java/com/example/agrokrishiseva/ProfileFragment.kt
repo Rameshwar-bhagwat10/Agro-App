@@ -16,49 +16,63 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
+// This class is the backend for your original fragment_profile.xml layout.
 class ProfileFragment : Fragment() {
 
-    private lateinit var sharedPreferences: SharedPreferences
+    // --- Views ---
     private lateinit var nameTextView: TextView
     private lateinit var emailTextView: TextView
     private lateinit var logoutButton: Button
     private lateinit var editProfileButton: Button
+
+    // --- Firebase & System ---
     private lateinit var auth: FirebaseAuth
     private lateinit var firestoreManager: FirestoreManager
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflates your original layout file
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize Firebase Auth
+        // Initialize Firebase and other components
         auth = Firebase.auth
         firestoreManager = FirestoreManager()
-
         sharedPreferences = requireActivity().getSharedPreferences("AgroApp", 0)
 
+        // Connect the views and set up listeners
         initViews(view)
         loadUserData()
         setupClickListeners()
     }
 
+    // This function will be called every time you return to this screen,
+    // ensuring the user's name is updated after editing.
+    override fun onResume() {
+        super.onResume()
+        loadUserData()
+    }
+
     private fun initViews(view: View) {
+        // This connects your Kotlin code to the TextViews and Buttons in your XML
         nameTextView = view.findViewById(R.id.tv_user_name)
         emailTextView = view.findViewById(R.id.tv_user_email)
         logoutButton = view.findViewById(R.id.btn_logout)
         editProfileButton = view.findViewById(R.id.btn_edit_profile)
+        // You can add more findViewById calls here for your other stats if you give them IDs
     }
 
     private fun loadUserData() {
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            // Load from Firestore
+            // If the user is logged in, load data from Firestore
             lifecycleScope.launch {
                 val result = firestoreManager.getUserData()
                 if (result.isSuccess) {
@@ -66,32 +80,26 @@ class ProfileFragment : Fragment() {
                     if (userData != null) {
                         nameTextView.text = userData.name
                         emailTextView.text = userData.email
-                        
-                        // Update stats in the profile layout if needed
-                        updateProfileStats(userData)
+                        // Here you would update your stats TextViews
+                        // For example: view.findViewById<TextView>(R.id.tv_total_orders).text = userData.totalOrders.toString()
                     } else {
-                        // Fallback to Firebase Auth user
+                        // Fallback to Firebase Auth user info if document doesn't exist yet
                         nameTextView.text = currentUser.displayName ?: "User"
                         emailTextView.text = currentUser.email ?: "user@example.com"
                     }
                 } else {
-                    // Fallback to Firebase Auth user
+                    // Fallback if there's an error fetching data
                     nameTextView.text = currentUser.displayName ?: "User"
                     emailTextView.text = currentUser.email ?: "user@example.com"
                 }
             }
         } else {
-            // Fallback to SharedPreferences
+            // Fallback to SharedPreferences if no user is logged in
             val userName = sharedPreferences.getString("userName", "User")
             val userEmail = sharedPreferences.getString("userEmail", "user@example.com")
             nameTextView.text = userName
             emailTextView.text = userEmail
         }
-    }
-    
-    private fun updateProfileStats(userData: UserData) {
-        // This method can be used to update profile statistics
-        // You can add TextViews in the profile layout to show these stats
     }
 
     private fun setupClickListeners() {
@@ -100,8 +108,9 @@ class ProfileFragment : Fragment() {
         }
 
         editProfileButton.setOnClickListener {
-            // For now, just show a toast - you can implement edit functionality later
-            android.widget.Toast.makeText(requireContext(), "Edit profile feature coming soon!", android.widget.Toast.LENGTH_SHORT).show()
+            // This correctly starts your EditProfileActivity
+            val intent = Intent(requireContext(), EditProfileActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -117,10 +126,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun performLogout() {
-        // Firebase logout
+        // Sign out from Firebase
         auth.signOut()
-        
-        // Clear SharedPreferences
+
+        // Clear any saved login data
         sharedPreferences.edit()
             .putBoolean("isLoggedIn", false)
             .remove("currentUserEmail")
@@ -128,6 +137,7 @@ class ProfileFragment : Fragment() {
             .remove("userEmail")
             .apply()
 
+        // Go back to the Login screen
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

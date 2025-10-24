@@ -39,6 +39,9 @@
         <activity android:name=".FirebaseTestActivity" android:exported="false" />
         
         <!-- Admin Activities -->
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
         <activity android:name=".admin.AdminLoginActivity" android:exported="false" />
         <activity android:name=".admin.AdminDashboardActivity" android:exported="false" />
 
