@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class ProductDetailsActivity : AppCompatActivity() {
+class ProductDetailsActivity : BaseActivity() {
 
     companion object {
         const val EXTRA_PRODUCT = "extra_product"

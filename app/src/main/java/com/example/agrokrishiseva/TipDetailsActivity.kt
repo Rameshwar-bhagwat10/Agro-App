@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class TipDetailsActivity : AppCompatActivity() {
+class TipDetailsActivity : BaseActivity() {
 
     companion object {
         const val EXTRA_TIP = "extra_tip"

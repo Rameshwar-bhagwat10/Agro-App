@@ -66,7 +66,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Account Information"
+                    android:text="@string/account_information"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
@@ -97,7 +97,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total Orders"
+                            android:text="@string/total_orders"
                             android:textSize="12sp"
                             android:textColor="@color/text_secondary" />
 
@@ -126,7 +126,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tips Saved"
+                            android:text="@string/tips_saved"
                             android:textSize="12sp"
                             android:textColor="@color/text_secondary" />
 
@@ -155,7 +155,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Member"
+                            android:text="@string/member"
                             android:textSize="12sp"
                             android:textColor="@color/text_secondary" />
 
@@ -178,7 +178,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Member Since"
+                        android:text="@string/member_since"
                         android:textSize="12sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginBottom="4dp" />
@@ -194,7 +194,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Farm Location"
+                        android:text="@string/farm_location"
                         android:textSize="12sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginBottom="4dp" />
@@ -217,7 +217,7 @@
             android:id="@+id/btn_edit_profile"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Edit Profile"
+            android:text="@string/edit_profile"
             android:textSize="16sp"
             android:textStyle="bold"
             android:backgroundTint="@color/primary_green"
@@ -226,10 +226,22 @@
             android:layout_marginBottom="12dp" />
 
         <Button
+            android:id="@+id/btn_change_language"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/change_language"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/accent_orange"
+            android:textColor="@color/white"
+            android:background="@drawable/button_background"
+            android:layout_marginBottom="12dp" />
+
+        <Button
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Logout"
+            android:text="@string/logout"
             android:textSize="16sp"
             android:textStyle="bold"
             android:backgroundTint="@color/error_red"

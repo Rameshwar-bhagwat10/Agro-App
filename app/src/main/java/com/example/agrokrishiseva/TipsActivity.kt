@@ -14,7 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class TipsActivity : AppCompatActivity() {
+class TipsActivity : BaseActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var tipAdapter: TipAdapter
