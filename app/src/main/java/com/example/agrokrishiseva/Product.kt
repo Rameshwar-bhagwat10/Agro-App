@@ -10,9 +10,13 @@ import kotlinx.parcelize.Parcelize
 data class Product(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
-    val description: String,
-    val category: String,
-    val price: Double,
-    val imageResId: Int
-) : Parcelable
+    val name: String = "",
+    val description: String = "",
+    val category: String = "",
+    val price: Double = 0.0,
+    val imageResId: Int = 0,
+    val firestoreId: String = "" // For Firestore document ID
+) : Parcelable {
+    // No-argument constructor for Firestore
+    constructor() : this(0, "", "", "", 0.0, 0, "")
+}

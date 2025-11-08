@@ -98,6 +98,15 @@ class UserManagementActivity : AppCompatActivity() {
             try {
                 progressBar.visibility = View.VISIBLE
                 
+                // Check if user is authenticated
+                val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                if (currentUser == null) {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(this@UserManagementActivity, "User not authenticated. Please login again.", Toast.LENGTH_LONG).show()
+                    return@launch
+                }
+                
+                // Try to read from Firestore with detailed error handling
                 val snapshot = firestore.collection("users").get().await()
                 allUsers.clear()
                 
@@ -112,9 +121,21 @@ class UserManagementActivity : AppCompatActivity() {
                 
                 progressBar.visibility = View.GONE
                 
+                if (allUsers.isEmpty()) {
+                    Toast.makeText(this@UserManagementActivity, "No users found. This might be normal if no users have registered yet.", Toast.LENGTH_LONG).show()
+                }
+                
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(this@UserManagementActivity, "Error loading users: ${e.message}", Toast.LENGTH_SHORT).show()
+                val errorMessage = when {
+                    e.message?.contains("PERMISSION_DENIED") == true -> 
+                        "Permission denied. Please check Firestore security rules. Error: ${e.message}"
+                    e.message?.contains("UNAUTHENTICATED") == true -> 
+                        "Authentication failed. Please login again. Error: ${e.message}"
+                    else -> "Error loading users: ${e.message}"
+                }
+                Toast.makeText(this@UserManagementActivity, errorMessage, Toast.LENGTH_LONG).show()
+                android.util.Log.e("UserManagement", "Error loading users", e)
             }
         }
     }

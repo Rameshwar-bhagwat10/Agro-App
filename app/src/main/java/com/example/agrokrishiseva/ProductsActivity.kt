@@ -11,8 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class ProductsActivity : AppCompatActivity() {
 
@@ -21,7 +23,9 @@ class ProductsActivity : AppCompatActivity() {
     private lateinit var productAdapter: ProductAdapter
     private var allProductsFromDb: List<Product> = emptyList()
     private lateinit var productDao: ProductDao
+    private lateinit var database: AppDatabase
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +33,10 @@ class ProductsActivity : AppCompatActivity() {
 
 
 
-        // Get the DAO instance
-        productDao = AppDatabase.getDatabase(this).productDao()
+        // Get the database and DAO instance
+        database = AppDatabase.getDatabase(this)
+        productDao = database.productDao()
+        firestore = FirebaseFirestore.getInstance()
 
         recyclerView = findViewById(R.id.product_recycler_view)
         categorySpinner = findViewById(R.id.category_spinner)
@@ -76,12 +82,62 @@ class ProductsActivity : AppCompatActivity() {
 
     private fun observeProducts() {
         lifecycleScope.launch {
-            productDao.getAllProducts().collectLatest { products ->
-                allProductsFromDb = products
-                // Re-apply filter whenever the data changes
-                filterProducts(categorySpinner.selectedItem.toString())
+            // Initialize default data if needed
+            val syncManager = DataSyncManager(this@ProductsActivity)
+            syncManager.initializeDefaultData()
+            
+            // Load products from both Room and Firestore
+            loadProductsFromBothSources()
+            
+            // Observe Room database changes
+            productDao.getAllProducts().collectLatest { roomProducts ->
+                // Merge with Firestore products
+                mergeProductSources(roomProducts)
+            }
+            
+            // Set up real-time listener for admin changes
+            setupProductRefreshListener()
+        }
+    }
+
+    private fun loadProductsFromBothSources() {
+        lifecycleScope.launch {
+            try {
+                // Load from Firestore
+                val firestoreProducts = mutableListOf<Product>()
+                val snapshot = firestore.collection("products").get().await()
+                
+                for (document in snapshot.documents) {
+                    val product: Product? = document.toObject(Product::class.java)
+                    product?.let { firestoreProducts.add(it) }
+                }
+                
+                // Sync Firestore products to Room database
+                for (firestoreProduct in firestoreProducts) {
+                    // Check if product exists in Room by firestoreId
+                    val existingProducts = database.productDao().getAllProductsList()
+                    val existingProduct = existingProducts.find { it.firestoreId == firestoreProduct.firestoreId }
+                    
+                    if (existingProduct == null) {
+                        // Product doesn't exist in Room, add it
+                        database.productDao().insertProduct(firestoreProduct)
+                    } else if (existingProduct != firestoreProduct) {
+                        // Product exists but is different, update it
+                        val updatedProduct = firestoreProduct.copy(id = existingProduct.id)
+                        database.productDao().updateProduct(updatedProduct)
+                    }
+                }
+                
+            } catch (e: Exception) {
+                // If Firestore fails, just use Room database
+                android.util.Log.w("ProductsActivity", "Failed to sync from Firestore: ${e.message}")
             }
         }
+    }
+
+    private fun mergeProductSources(roomProducts: List<Product>) {
+        allProductsFromDb = roomProducts
+        filterProducts(categorySpinner.selectedItem.toString())
     }
 
     private fun filterProducts(category: String) {
@@ -91,6 +147,23 @@ class ProductsActivity : AppCompatActivity() {
             allProductsFromDb.filter { it.category == category }
         }
         productAdapter.updateProducts(filteredList)
+    }
+
+    private fun setupProductRefreshListener() {
+        // Listen for data refresh triggers from admin panel
+        firestore.collection("app_settings").document("data_refresh")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) return@addSnapshotListener
+                
+                snapshot?.let { doc ->
+                    val trigger = doc.getString("trigger")
+                    if (trigger == "admin_update") {
+                        // Reload products from both sources when admin makes changes
+                        loadProductsFromBothSources()
+                        android.util.Log.d("ProductsActivity", "Admin triggered data refresh")
+                    }
+                }
+            }
     }
 
     private fun setupBottomNavigation() {

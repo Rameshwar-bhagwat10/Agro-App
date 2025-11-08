@@ -130,6 +130,14 @@ class TipsManagementActivity : AppCompatActivity() {
             try {
                 progressBar.visibility = View.VISIBLE
                 
+                // Check authentication
+                val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                if (currentUser == null) {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(this@TipsManagementActivity, "User not authenticated. Please login again.", Toast.LENGTH_LONG).show()
+                    return@launch
+                }
+                
                 val snapshot = firestore.collection("tips").get().await()
                 allTips.clear()
                 
@@ -146,9 +154,21 @@ class TipsManagementActivity : AppCompatActivity() {
                 
                 progressBar.visibility = View.GONE
                 
+                if (allTips.isEmpty()) {
+                    Toast.makeText(this@TipsManagementActivity, "No tips found. You can add new tips using the + button.", Toast.LENGTH_LONG).show()
+                }
+                
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
-                Toast.makeText(this@TipsManagementActivity, "Error loading tips: ${e.message}", Toast.LENGTH_SHORT).show()
+                val errorMessage = when {
+                    e.message?.contains("PERMISSION_DENIED") == true -> 
+                        "Permission denied. Please check Firestore security rules. Error: ${e.message}"
+                    e.message?.contains("UNAUTHENTICATED") == true -> 
+                        "Authentication failed. Please login again. Error: ${e.message}"
+                    else -> "Error loading tips: ${e.message}"
+                }
+                Toast.makeText(this@TipsManagementActivity, errorMessage, Toast.LENGTH_LONG).show()
+                android.util.Log.e("TipsManagement", "Error loading tips", e)
             }
         }
     }

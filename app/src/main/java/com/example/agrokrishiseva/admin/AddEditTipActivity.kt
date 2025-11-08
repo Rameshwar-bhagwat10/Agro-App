@@ -100,6 +100,11 @@ class AddEditTipActivity : AppCompatActivity() {
                 
                 firestore.collection("tips").document(newId.toString()).set(tip).await()
                 
+                // Trigger sync to ensure customers see the new tip
+                val syncService = AdminDataSyncService(this@AddEditTipActivity)
+                syncService.syncTipToCustomers(tip)
+                syncService.forceDataRefresh()
+                
                 progressBar.visibility = View.GONE
                 Toast.makeText(this@AddEditTipActivity, "Tip created successfully", Toast.LENGTH_SHORT).show()
                 finish()
@@ -128,6 +133,11 @@ class AddEditTipActivity : AppCompatActivity() {
                     )
                     
                     firestore.collection("tips").document(tip.id.toString()).set(updatedTip).await()
+                    
+                    // Trigger sync to ensure customers see the updated tip
+                    val syncService = AdminDataSyncService(this@AddEditTipActivity)
+                    syncService.syncTipToCustomers(updatedTip)
+                    syncService.forceDataRefresh()
                     
                     progressBar.visibility = View.GONE
                     Toast.makeText(this@AddEditTipActivity, "Tip updated successfully", Toast.LENGTH_SHORT).show()

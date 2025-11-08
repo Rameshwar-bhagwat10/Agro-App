@@ -7,6 +7,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.agrokrishiseva.FirebaseConnectionTest
 import com.example.agrokrishiseva.LoginActivity
 import com.example.agrokrishiseva.R
 import com.google.android.material.card.MaterialCardView
@@ -20,12 +21,14 @@ class AdminDashboardActivity : AppCompatActivity() {
     private lateinit var adminNameTextView: TextView
     private lateinit var totalUsersTextView: TextView
     private lateinit var activeUsersTextView: TextView
+    private lateinit var totalProductsTextView: TextView
+    private lateinit var totalTipsTextView: TextView
     private lateinit var logoutButton: Button
     private lateinit var manageUsersCard: MaterialCardView
     private lateinit var viewReportsCard: MaterialCardView
     private lateinit var productManagementCard: MaterialCardView
     private lateinit var tipsManagementCard: MaterialCardView
-    private lateinit var systemSettingsCard: MaterialCardView
+    private lateinit var firebaseTestCard: MaterialCardView
     
     private lateinit var auth: FirebaseAuth
     private lateinit var adminManager: AdminManager
@@ -68,12 +71,14 @@ class AdminDashboardActivity : AppCompatActivity() {
         adminNameTextView = findViewById(R.id.tv_admin_name)
         totalUsersTextView = findViewById(R.id.tv_total_users)
         activeUsersTextView = findViewById(R.id.tv_active_users)
+        totalProductsTextView = findViewById(R.id.tv_total_products)
+        totalTipsTextView = findViewById(R.id.tv_total_tips)
         logoutButton = findViewById(R.id.btn_logout)
         manageUsersCard = findViewById(R.id.card_manage_users)
         viewReportsCard = findViewById(R.id.card_view_reports)
         productManagementCard = findViewById(R.id.card_product_management)
         tipsManagementCard = findViewById(R.id.card_tips_management)
-        systemSettingsCard = findViewById(R.id.card_system_settings)
+        firebaseTestCard = findViewById(R.id.card_firebase_test)
     }
 
     private fun setupClickListeners() {
@@ -97,8 +102,8 @@ class AdminDashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, TipsManagementActivity::class.java))
         }
 
-        systemSettingsCard.setOnClickListener {
-            startActivity(Intent(this, SystemSettingsActivity::class.java))
+        firebaseTestCard.setOnClickListener {
+            startActivity(Intent(this, FirebaseConnectionTest::class.java))
         }
     }
 
@@ -115,6 +120,12 @@ class AdminDashboardActivity : AppCompatActivity() {
                 val userStats = adminManager.getUserStats()
                 totalUsersTextView.text = userStats.totalUsers.toString()
                 activeUsersTextView.text = userStats.activeUsers.toString()
+                
+                // Load data sync statistics
+                val syncService = AdminDataSyncService(this@AdminDashboardActivity)
+                val dataStats = syncService.getDataStatistics()
+                totalProductsTextView.text = dataStats.totalProducts.toString()
+                totalTipsTextView.text = dataStats.totalTips.toString()
 
             } catch (e: Exception) {
                 Toast.makeText(this@AdminDashboardActivity, "Error loading dashboard data", Toast.LENGTH_SHORT).show()

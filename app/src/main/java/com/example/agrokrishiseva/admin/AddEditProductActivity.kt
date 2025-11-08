@@ -1,15 +1,18 @@
 package com.example.agrokrishiseva.admin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.example.agrokrishiseva.AppDatabase
+import com.example.agrokrishiseva.FirebaseDebugHelper
 import com.example.agrokrishiseva.Product
 import com.example.agrokrishiseva.R
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class AddEditProductActivity : AppCompatActivity() {
 
@@ -22,6 +25,7 @@ class AddEditProductActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     
     private lateinit var database: AppDatabase
+    private lateinit var firestore: FirebaseFirestore
     private var isEditMode = false
     private var currentProduct: Product? = null
     
@@ -37,11 +41,8 @@ class AddEditProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_product)
         
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "agro_database"
-        ).build()
+        database = AppDatabase.getDatabase(this)
+        firestore = FirebaseFirestore.getInstance()
         
         currentProduct = intent.getParcelableExtra("product")
         isEditMode = currentProduct != null
@@ -113,27 +114,59 @@ class AddEditProductActivity : AppCompatActivity() {
         
         lifecycleScope.launch {
             try {
+                Log.d("AddEditProduct", "Starting product creation...")
                 progressBar.visibility = View.VISIBLE
                 btnSave.isEnabled = false
                 
                 val selectedImageName = spinnerImage.selectedItem.toString()
                 val imageResId = imageOptions[selectedImageName] ?: R.drawable.ic_launcher_foreground
                 
+                // Generate Firestore document ID
+                val firestoreId = firestore.collection("products").document().id
+                Log.d("AddEditProduct", "Generated Firestore ID: $firestoreId")
+                
                 val product = Product(
                     name = etProductName.text.toString().trim(),
                     description = etProductDescription.text.toString().trim(),
                     category = spinnerCategory.selectedItem.toString(),
                     price = etProductPrice.text.toString().toDouble(),
-                    imageResId = imageResId
+                    imageResId = imageResId,
+                    firestoreId = firestoreId
                 )
                 
+                Log.d("AddEditProduct", "Product object created: $product")
+                
+                // Save to Room Database first
+                Log.d("AddEditProduct", "Saving to Room Database...")
                 database.productDao().insertProduct(product)
+                Log.d("AddEditProduct", "Saved to Room Database successfully")
+                
+                // Save to Firestore
+                Log.d("AddEditProduct", "Saving to Firestore...")
+                
+                // First test if Firebase is working
+                val connectionTest = FirebaseDebugHelper.testFirebaseConnection()
+                if (!connectionTest) {
+                    throw Exception("Firebase connection test failed")
+                }
+                
+                firestore.collection("products").document(firestoreId).set(product).await()
+                Log.d("AddEditProduct", "Saved to Firestore successfully")
+                
+                // Verify the save
+                val verifyDoc = firestore.collection("products").document(firestoreId).get().await()
+                if (verifyDoc.exists()) {
+                    Log.d("AddEditProduct", "Firestore save verified: ${verifyDoc.data}")
+                } else {
+                    Log.w("AddEditProduct", "Firestore save verification failed - document not found")
+                }
                 
                 progressBar.visibility = View.GONE
                 Toast.makeText(this@AddEditProductActivity, "Product created successfully", Toast.LENGTH_SHORT).show()
                 finish()
                 
             } catch (e: Exception) {
+                Log.e("AddEditProduct", "Error creating product", e)
                 progressBar.visibility = View.GONE
                 btnSave.isEnabled = true
                 Toast.makeText(this@AddEditProductActivity, "Error creating product: ${e.message}", Toast.LENGTH_LONG).show()
@@ -161,7 +194,18 @@ class AddEditProductActivity : AppCompatActivity() {
                         imageResId = imageResId
                     )
                     
+                    // Update both Room Database and Firestore
                     database.productDao().updateProduct(updatedProduct)
+                    
+                    // Update in Firestore using existing firestoreId or create new one
+                    val firestoreDocId = if (product.firestoreId.isNotEmpty()) {
+                        product.firestoreId
+                    } else {
+                        firestore.collection("products").document().id
+                    }
+                    
+                    val productWithFirestoreId = updatedProduct.copy(firestoreId = firestoreDocId)
+                    firestore.collection("products").document(firestoreDocId).set(productWithFirestoreId).await()
                     
                     progressBar.visibility = View.GONE
                     Toast.makeText(this@AddEditProductActivity, "Product updated successfully", Toast.LENGTH_SHORT).show()

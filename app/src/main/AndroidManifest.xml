@@ -37,6 +37,7 @@
         <activity android:name=".TipsActivity" android:exported="false" />
         <activity android:name=".TipDetailsActivity" android:exported="false" />
         <activity android:name=".FirebaseTestActivity" android:exported="false" />
+        <activity android:name=".FirebaseConnectionTest" android:exported="false" />
         
         <!-- Admin Activities -->
         <activity
@@ -52,7 +53,7 @@
         <activity android:name=".admin.TipsManagementActivity" android:exported="false" />
         <activity android:name=".admin.AddEditTipActivity" android:exported="false" />
         <activity android:name=".admin.AnalyticsActivity" android:exported="false" />
-        <activity android:name=".admin.SystemSettingsActivity" android:exported="false" />
+
 
     </application>
 </manifest>

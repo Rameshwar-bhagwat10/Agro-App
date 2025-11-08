@@ -42,11 +42,7 @@ class AnalyticsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         
         firestore = FirebaseFirestore.getInstance()
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "agro_database"
-        ).build()
+        database = AppDatabase.getDatabase(this)
         
         initViews()
         setupRecyclerView()
@@ -99,6 +95,13 @@ class AnalyticsActivity : AppCompatActivity() {
 
     private suspend fun loadUserStatistics() {
         try {
+            // Check authentication
+            val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            if (currentUser == null) {
+                Toast.makeText(this, "User not authenticated. Please login again.", Toast.LENGTH_LONG).show()
+                return
+            }
+            
             val usersSnapshot = firestore.collection("users").get().await()
             val totalUsers = usersSnapshot.size()
             
@@ -139,7 +142,15 @@ class AnalyticsActivity : AppCompatActivity() {
             tvNewUsersMonth.text = newUsersMonth.toString()
             
         } catch (e: Exception) {
-            Toast.makeText(this, "Error loading user statistics: ${e.message}", Toast.LENGTH_SHORT).show()
+            val errorMessage = when {
+                e.message?.contains("PERMISSION_DENIED") == true -> 
+                    "Permission denied. Please check Firestore security rules."
+                e.message?.contains("UNAUTHENTICATED") == true -> 
+                    "Authentication failed. Please login again."
+                else -> "Error loading user statistics: ${e.message}"
+            }
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+            android.util.Log.e("Analytics", "Error loading user statistics", e)
         }
     }
 

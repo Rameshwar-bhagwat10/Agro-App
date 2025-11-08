@@ -19,6 +19,7 @@ import com.example.agrokrishiseva.Product
 import com.example.agrokrishiseva.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class ProductManagementActivity : AppCompatActivity() {
 
@@ -42,11 +43,7 @@ class ProductManagementActivity : AppCompatActivity() {
         supportActionBar?.title = "Product Management"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "agro_database"
-        ).build()
+        database = AppDatabase.getDatabase(this)
         
         initViews()
         setupRecyclerView()
@@ -159,7 +156,15 @@ class ProductManagementActivity : AppCompatActivity() {
     private fun deleteProduct(product: Product) {
         lifecycleScope.launch {
             try {
+                // Delete from Room Database
                 database.productDao().deleteProduct(product)
+                
+                // Delete from Firestore if it has a firestoreId
+                if (product.firestoreId.isNotEmpty()) {
+                    val firestore = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                    firestore.collection("products").document(product.firestoreId).delete().await()
+                }
+                
                 loadProducts() // Refresh the list
                 Toast.makeText(this@ProductManagementActivity, "Product deleted successfully", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {

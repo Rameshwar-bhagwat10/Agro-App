@@ -2,30 +2,40 @@ package com.example.agrokrishiseva
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class TipsActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var tipAdapter: TipAdapter
-    private val allTips = getMockTips() // Mock data source
+    private lateinit var progressBar: ProgressBar
+    private var allTips = mutableListOf<Tip>()
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tips)
 
-
+        firestore = FirebaseFirestore.getInstance()
 
         recyclerView = findViewById(R.id.tips_recycler_view)
         bottomNavigation = findViewById(R.id.bottom_navigation)
+        progressBar = findViewById(R.id.progress_bar)
 
         setupRecyclerView()
         setupBottomNavigation()
+        loadTipsFromFirestore()
 
         // Set tips as selected in bottom navigation
         bottomNavigation.selectedItemId = R.id.nav_tips
@@ -41,6 +51,8 @@ class TipsActivity : AppCompatActivity() {
                 val message = if (tip.isBookmarked) "Bookmarked '${tip.title}'" else "Removed bookmark for '${tip.title}'"
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 tipAdapter.notifyDataSetChanged()
+                
+                // TODO: Save bookmark status to user preferences or database
             },
             onItemClick = { tip ->
                 // Launch the TipDetailsActivity
@@ -52,6 +64,94 @@ class TipsActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = tipAdapter
+    }
+
+    private fun loadTipsFromFirestore() {
+        lifecycleScope.launch {
+            try {
+                progressBar.visibility = View.VISIBLE
+                
+                val snapshot = firestore.collection("tips").get().await()
+                allTips.clear()
+                
+                if (snapshot.isEmpty) {
+                    // If no tips in Firestore, create some default tips
+                    createDefaultTips()
+                } else {
+                    // Load tips from Firestore
+                    for (document in snapshot.documents) {
+                        val tip = document.toObject(Tip::class.java)
+                        tip?.let { allTips.add(it) }
+                    }
+                }
+                
+                tipAdapter.notifyDataSetChanged()
+                progressBar.visibility = View.GONE
+                
+                // Set up real-time listener for data refresh
+                setupDataRefreshListener()
+                
+            } catch (e: Exception) {
+                progressBar.visibility = View.GONE
+                // Fallback to mock data if Firestore fails
+                allTips.clear()
+                allTips.addAll(getMockTips())
+                tipAdapter.notifyDataSetChanged()
+                Toast.makeText(this@TipsActivity, "Loading tips from local data", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupDataRefreshListener() {
+        // Listen for data refresh triggers from admin panel
+        firestore.collection("app_settings").document("data_refresh")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) return@addSnapshotListener
+                
+                snapshot?.let { doc ->
+                    val trigger = doc.getString("trigger")
+                    if (trigger == "admin_update") {
+                        // Refresh tips data when admin makes changes
+                        refreshTipsData()
+                    }
+                }
+            }
+    }
+
+    private fun refreshTipsData() {
+        lifecycleScope.launch {
+            try {
+                val snapshot = firestore.collection("tips").get().await()
+                allTips.clear()
+                
+                for (document in snapshot.documents) {
+                    val tip = document.toObject(Tip::class.java)
+                    tip?.let { allTips.add(it) }
+                }
+                
+                tipAdapter.notifyDataSetChanged()
+                
+            } catch (e: Exception) {
+                // Ignore refresh errors
+            }
+        }
+    }
+
+    private fun createDefaultTips() {
+        lifecycleScope.launch {
+            try {
+                val defaultTips = getMockTips()
+                for (tip in defaultTips) {
+                    firestore.collection("tips").document(tip.id.toString()).set(tip).await()
+                }
+                allTips.addAll(defaultTips)
+                Toast.makeText(this@TipsActivity, "Created default tips in database", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                // If creation fails, just use mock data locally
+                allTips.addAll(getMockTips())
+                Toast.makeText(this@TipsActivity, "Using local tips data", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     // --- Mock Data Function ---
