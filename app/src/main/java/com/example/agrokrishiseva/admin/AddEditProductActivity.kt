@@ -7,6 +7,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.agrokrishiseva.AppDatabase
+import com.example.agrokrishiseva.DatabaseResetHelper
 import com.example.agrokrishiseva.FirebaseDebugHelper
 import com.example.agrokrishiseva.Product
 import com.example.agrokrishiseva.R
@@ -138,27 +139,37 @@ class AddEditProductActivity : AppCompatActivity() {
                 
                 // Save to Room Database first
                 Log.d("AddEditProduct", "Saving to Room Database...")
-                database.productDao().insertProduct(product)
-                Log.d("AddEditProduct", "Saved to Room Database successfully")
+                try {
+                    database.productDao().insertProduct(product)
+                    Log.d("AddEditProduct", "Saved to Room Database successfully")
+                } catch (roomError: Exception) {
+                    Log.e("AddEditProduct", "Room Database save failed: ${roomError.message}")
+                    
+                    // Check if it's an integrity issue and try to reset database
+                    if (roomError.message?.contains("integrity", ignoreCase = true) == true) {
+                        Log.d("AddEditProduct", "Attempting database reset due to integrity issue...")
+                        val resetSuccess = DatabaseResetHelper.resetDatabase(this@AddEditProductActivity)
+                        if (resetSuccess) {
+                            // Retry the save after reset
+                            database = AppDatabase.getDatabase(this@AddEditProductActivity)
+                            database.productDao().insertProduct(product)
+                            Log.d("AddEditProduct", "Saved to Room Database successfully after reset")
+                        } else {
+                            throw Exception("Database reset failed: ${roomError.message}")
+                        }
+                    } else {
+                        throw Exception("Database save failed: ${roomError.message}")
+                    }
+                }
                 
                 // Save to Firestore
                 Log.d("AddEditProduct", "Saving to Firestore...")
-                
-                // First test if Firebase is working
-                val connectionTest = FirebaseDebugHelper.testFirebaseConnection()
-                if (!connectionTest) {
-                    throw Exception("Firebase connection test failed")
-                }
-                
-                firestore.collection("products").document(firestoreId).set(product).await()
-                Log.d("AddEditProduct", "Saved to Firestore successfully")
-                
-                // Verify the save
-                val verifyDoc = firestore.collection("products").document(firestoreId).get().await()
-                if (verifyDoc.exists()) {
-                    Log.d("AddEditProduct", "Firestore save verified: ${verifyDoc.data}")
-                } else {
-                    Log.w("AddEditProduct", "Firestore save verification failed - document not found")
+                try {
+                    firestore.collection("products").document(firestoreId).set(product).await()
+                    Log.d("AddEditProduct", "Saved to Firestore successfully")
+                } catch (firestoreError: Exception) {
+                    Log.w("AddEditProduct", "Firestore save failed, but Room save succeeded: ${firestoreError.message}")
+                    // Continue anyway since Room save succeeded
                 }
                 
                 progressBar.visibility = View.GONE

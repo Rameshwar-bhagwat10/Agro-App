@@ -30,12 +30,24 @@ class FirebaseConnectionTest : AppCompatActivity() {
             setOnClickListener { testFirebaseConnection() }
         }
         
+        val btnDbTest = Button(this).apply {
+            text = "Test Database Integrity"
+            setOnClickListener { testDatabaseIntegrity() }
+        }
+        
+        val btnDbReset = Button(this).apply {
+            text = "Reset Database (Dev Only)"
+            setOnClickListener { resetDatabase() }
+        }
+        
         tvResult = TextView(this).apply {
-            text = "Click button to test Firebase connection"
+            text = "Click buttons to test Firebase connection or database integrity"
             setPadding(0, 50, 0, 0)
         }
         
         layout.addView(btnTest)
+        layout.addView(btnDbTest)
+        layout.addView(btnDbReset)
         layout.addView(tvResult)
         setContentView(layout)
         
@@ -86,6 +98,48 @@ class FirebaseConnectionTest : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.e("FirebaseTest", "Firebase test failed", e)
                 tvResult.text = "❌ Firebase test failed:\n${e.message}\n\nCheck logs for details"
+            }
+        }
+    }
+    
+    private fun testDatabaseIntegrity() {
+        lifecycleScope.launch {
+            try {
+                tvResult.text = "Testing database integrity..."
+                Log.d("DatabaseTest", "Starting database integrity test")
+                
+                val isIntegrityOk = DatabaseResetHelper.checkDatabaseIntegrity(this@FirebaseConnectionTest)
+                
+                if (isIntegrityOk) {
+                    tvResult.text = "✅ Database integrity check passed!\n\nDatabase is working correctly."
+                } else {
+                    tvResult.text = "❌ Database integrity check failed!\n\nConsider resetting the database."
+                }
+                
+            } catch (e: Exception) {
+                Log.e("DatabaseTest", "Database integrity test failed", e)
+                tvResult.text = "❌ Database integrity test failed:\n${e.message}"
+            }
+        }
+    }
+    
+    private fun resetDatabase() {
+        lifecycleScope.launch {
+            try {
+                tvResult.text = "Resetting database..."
+                Log.d("DatabaseTest", "Starting database reset")
+                
+                val resetSuccess = DatabaseResetHelper.resetDatabase(this@FirebaseConnectionTest)
+                
+                if (resetSuccess) {
+                    tvResult.text = "✅ Database reset successful!\n\nDatabase has been recreated with fresh schema."
+                } else {
+                    tvResult.text = "❌ Database reset failed!\n\nCheck logs for details."
+                }
+                
+            } catch (e: Exception) {
+                Log.e("DatabaseTest", "Database reset failed", e)
+                tvResult.text = "❌ Database reset failed:\n${e.message}"
             }
         }
     }
