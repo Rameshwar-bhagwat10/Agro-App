@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Agro Krishi"
+        android:text="@string/welcome_to_agro"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/text_primary"
@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Current Weather"
+                android:text="@string/current_weather"
                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
             <TextView
@@ -69,13 +69,13 @@
         android:id="@+id/btn_browse_products"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Browse Products"
+        android:text="@string/browse_products_btn"
         android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btn_farming_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Farming Tips"/>
+        android:text="@string/farming_tips_btn"/>
 
 </LinearLayout>

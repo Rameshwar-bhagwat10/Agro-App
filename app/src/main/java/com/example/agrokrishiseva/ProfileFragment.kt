@@ -24,6 +24,7 @@ class ProfileFragment : Fragment() {
     private lateinit var emailTextView: TextView
     private lateinit var logoutButton: Button
     private lateinit var editProfileButton: Button
+    private lateinit var changeLanguageButton: Button
 
     // --- Firebase & System ---
     private lateinit var auth: FirebaseAuth
@@ -66,6 +67,7 @@ class ProfileFragment : Fragment() {
         emailTextView = view.findViewById(R.id.tv_user_email)
         logoutButton = view.findViewById(R.id.btn_logout)
         editProfileButton = view.findViewById(R.id.btn_edit_profile)
+        changeLanguageButton = view.findViewById(R.id.btn_change_language)
         // You can add more findViewById calls here for your other stats if you give them IDs
     }
 
@@ -112,16 +114,46 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
         }
+
+        changeLanguageButton.setOnClickListener {
+            showLanguageSelectionDialog()
+        }
     }
 
     private fun showLogoutDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(R.string.logout_title)
+            .setMessage(R.string.logout_message)
+            .setPositiveButton(R.string.yes) { _, _ ->
                 performLogout()
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(R.string.no, null)
+            .show()
+    }
+
+    private fun showLanguageSelectionDialog() {
+        val languages = arrayOf(
+            getString(R.string.language_english),
+            getString(R.string.language_hindi),
+            getString(R.string.language_marathi)
+        )
+        val languageCodes = arrayOf("en", "hi", "mr")
+        
+        val currentLanguage = LocaleHelper.getLanguage(requireContext())
+        val selectedIndex = languageCodes.indexOf(currentLanguage)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.select_language)
+            .setSingleChoiceItems(languages, selectedIndex) { dialog, which ->
+                val selectedLanguageCode = languageCodes[which]
+                if (selectedLanguageCode != currentLanguage) {
+                    LocaleHelper.setLocale(requireContext(), selectedLanguageCode)
+                    // Restart the activity to apply language change
+                    requireActivity().recreate()
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.no, null)
             .show()
     }
 

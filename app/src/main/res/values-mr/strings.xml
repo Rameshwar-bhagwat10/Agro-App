@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">अग्रो कृषी</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">होम</string>
+    <string name="nav_products">उत्पादने</string>
+    <string name="nav_tips">टिप्स</string>
+    <string name="nav_profile">प्रोफाइल</string>
+    
+    <!-- Home Screen -->
+    <string name="welcome_back">परत स्वागत आहे, शेतकरी!</string>
+    <string name="todays_weather">आजचे हवामान</string>
+    <string name="quick_actions">द्रुत क्रिया</string>
+    <string name="browse_products">उत्पादने\nपहा</string>
+    <string name="farming_tips">शेती\nटिप्स</string>
+    <string name="farm_insights">शेत माहिती</string>
+    <string name="orders">ऑर्डर</string>
+    <string name="tips_read">टिप्स वाचल्या</string>
+    <string name="acres">एकर</string>
+    
+    <!-- Products Screen -->
+    <string name="products_title">उत्पादने</string>
+    <string name="search_products">उत्पादने किंवा पिके शोधा...</string>
+    <string name="all_categories">सर्व श्रेणी</string>
+    <string name="category_seeds">बियाणे</string>
+    <string name="category_fertilizers">खते</string>
+    <string name="category_pesticides">कीटकनाशके</string>
+    <string name="category_tools">साधने</string>
+    
+    <!-- Tips Screen -->
+    <string name="farming_tips_title">शेती टिप्स</string>
+    <string name="bookmark_tip">ही टीप बुकमार्क करा</string>
+    
+    <!-- Weather -->
+    <string name="current_weather">सध्याचे हवामान</string>
+    <string name="welcome_to_agro">अग्रो कृषीमध्ये आपले स्वागत आहे</string>
+    <string name="browse_products_btn">उत्पादने पहा</string>
+    <string name="farming_tips_btn">शेती टिप्स</string>
+    
+    <!-- Profile Screen -->
+    <string name="account_information">खाते माहिती</string>
+    <string name="total_orders">एकूण ऑर्डर</string>
+    <string name="tips_saved">टिप्स जतन केल्या</string>
+    <string name="member">सदस्य</string>
+    <string name="member_since">सदस्य कधीपासून</string>
+    <string name="farm_location">शेताचे स्थान</string>
+    <string name="edit_profile">प्रोफाइल संपादित करा</string>
+    <string name="logout">लॉगआउट</string>
+    <string name="change_language">भाषा बदला</string>
+    
+    <!-- Logout Dialog -->
+    <string name="logout_title">लॉगआउट</string>
+    <string name="logout_message">तुम्हाला खात्री आहे की तुम्ही लॉगआउट करू इच्छिता?</string>
+    <string name="yes">होय</string>
+    <string name="no">नाही</string>
+    
+    <!-- Language Selection -->
+    <string name="select_language">भाषा निवडा</string>
+    <string name="language_english">English</string>
+    <string name="language_hindi">हिंदी</string>
+    <string name="language_marathi">मराठी</string>
+    
+    <!-- Common -->
+    <string name="product_image">उत्पादन प्रतिमा</string>
+    <string name="add_to_cart_enquiry">कार्टमध्ये जोडा किंवा चौकशी करा</string>
+    <string name="add_to_cart">कार्टमध्ये जोडा</string>
+    <string name="select_category">श्रेणी निवडा</string>
+</resources>

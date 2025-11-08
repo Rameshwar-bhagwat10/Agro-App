@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class ProductsActivity : AppCompatActivity() {
+class ProductsActivity : BaseActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var categorySpinner: Spinner
@@ -66,14 +66,22 @@ class ProductsActivity : AppCompatActivity() {
     }
 
     private fun setupCategorySpinner() {
-        val categories = listOf("All Categories", "Seeds", "Fertilizers", "Pesticides", "Tools")
+        val categories = listOf(
+            getString(R.string.all_categories),
+            getString(R.string.category_seeds),
+            getString(R.string.category_fertilizers),
+            getString(R.string.category_pesticides),
+            getString(R.string.category_tools)
+        )
+        val categoryKeys = listOf("All Categories", "Seeds", "Fertilizers", "Pesticides", "Tools")
+        
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = adapter
 
         categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedCategory = categories[position]
+                val selectedCategory = categoryKeys[position]
                 filterProducts(selectedCategory)
             }
             override fun onNothingSelected(parent: AdapterView<*>) {}
