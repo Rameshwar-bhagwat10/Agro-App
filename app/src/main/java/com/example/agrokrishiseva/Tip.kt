@@ -5,9 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Tip(
-    val id: Int,
-    val title: String,
-    val content: String,
-    val category: String, // e.g., "Irrigation", "Seasonal Advice"
+    val id: Int = 0,
+    val title: String = "",
+    val content: String = "",
+    val category: String = "", // e.g., "Irrigation", "Seasonal Advice"
     var isBookmarked: Boolean = false
-) : Parcelable
+) : Parcelable {
+    // No-argument constructor for Firestore
+    constructor() : this(0, "", "", "", false)
+}

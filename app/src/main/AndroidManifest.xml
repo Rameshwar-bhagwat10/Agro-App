@@ -41,6 +41,15 @@
         <!-- Admin Activities -->
         <activity android:name=".admin.AdminLoginActivity" android:exported="false" />
         <activity android:name=".admin.AdminDashboardActivity" android:exported="false" />
+        <activity android:name=".admin.UserManagementActivity" android:exported="false" />
+        <activity android:name=".admin.UserDetailsActivity" android:exported="false" />
+        <activity android:name=".admin.AddEditUserActivity" android:exported="false" />
+        <activity android:name=".admin.ProductManagementActivity" android:exported="false" />
+        <activity android:name=".admin.AddEditProductActivity" android:exported="false" />
+        <activity android:name=".admin.TipsManagementActivity" android:exported="false" />
+        <activity android:name=".admin.AddEditTipActivity" android:exported="false" />
+        <activity android:name=".admin.AnalyticsActivity" android:exported="false" />
+        <activity android:name=".admin.SystemSettingsActivity" android:exported="false" />
 
     </application>
 </manifest>

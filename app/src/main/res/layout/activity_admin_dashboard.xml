@@ -296,6 +296,130 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Product Management -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_product_management"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_gallery"
+                        android:layout_marginEnd="16dp"
+                        android:tint="@color/design_default_color_primary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Product Management"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/design_default_color_on_surface" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manage products and inventory"
+                            android:textSize="12sp"
+                            android:textColor="@color/design_default_color_on_surface"
+                            android:alpha="0.7" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_send"
+                        android:rotation="180"
+                        android:tint="@color/design_default_color_on_surface"
+                        android:alpha="0.5" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tips Management -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_tips_management"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        android:layout_marginEnd="16dp"
+                        android:tint="@color/design_default_color_primary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tips Management"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/design_default_color_on_surface" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manage farming tips and content"
+                            android:textSize="12sp"
+                            android:textColor="@color/design_default_color_on_surface"
+                            android:alpha="0.7" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_send"
+                        android:rotation="180"
+                        android:tint="@color/design_default_color_on_surface"
+                        android:alpha="0.5" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- System Settings -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_system_settings"

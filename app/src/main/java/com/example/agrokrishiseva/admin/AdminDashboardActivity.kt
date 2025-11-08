@@ -23,6 +23,8 @@ class AdminDashboardActivity : AppCompatActivity() {
     private lateinit var logoutButton: Button
     private lateinit var manageUsersCard: MaterialCardView
     private lateinit var viewReportsCard: MaterialCardView
+    private lateinit var productManagementCard: MaterialCardView
+    private lateinit var tipsManagementCard: MaterialCardView
     private lateinit var systemSettingsCard: MaterialCardView
     
     private lateinit var auth: FirebaseAuth
@@ -69,6 +71,8 @@ class AdminDashboardActivity : AppCompatActivity() {
         logoutButton = findViewById(R.id.btn_logout)
         manageUsersCard = findViewById(R.id.card_manage_users)
         viewReportsCard = findViewById(R.id.card_view_reports)
+        productManagementCard = findViewById(R.id.card_product_management)
+        tipsManagementCard = findViewById(R.id.card_tips_management)
         systemSettingsCard = findViewById(R.id.card_system_settings)
     }
 
@@ -78,18 +82,23 @@ class AdminDashboardActivity : AppCompatActivity() {
         }
 
         manageUsersCard.setOnClickListener {
-            Toast.makeText(this, "Manage Users - Feature coming soon", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to user management activity
+            startActivity(Intent(this, UserManagementActivity::class.java))
         }
 
         viewReportsCard.setOnClickListener {
-            Toast.makeText(this, "View Reports - Feature coming soon", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to reports activity
+            startActivity(Intent(this, AnalyticsActivity::class.java))
+        }
+
+        productManagementCard.setOnClickListener {
+            startActivity(Intent(this, ProductManagementActivity::class.java))
+        }
+
+        tipsManagementCard.setOnClickListener {
+            startActivity(Intent(this, TipsManagementActivity::class.java))
         }
 
         systemSettingsCard.setOnClickListener {
-            Toast.makeText(this, "System Settings - Feature coming soon", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to settings activity
+            startActivity(Intent(this, SystemSettingsActivity::class.java))
         }
     }
 
