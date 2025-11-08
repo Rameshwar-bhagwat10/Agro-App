@@ -7,7 +7,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.agrokrishiseva.FirebaseConnectionTest
+
 import com.example.agrokrishiseva.LoginActivity
 import com.example.agrokrishiseva.R
 import com.google.android.material.card.MaterialCardView
@@ -28,7 +28,7 @@ class AdminDashboardActivity : AppCompatActivity() {
     private lateinit var viewReportsCard: MaterialCardView
     private lateinit var productManagementCard: MaterialCardView
     private lateinit var tipsManagementCard: MaterialCardView
-    private lateinit var firebaseTestCard: MaterialCardView
+
     
     private lateinit var auth: FirebaseAuth
     private lateinit var adminManager: AdminManager
@@ -78,7 +78,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         viewReportsCard = findViewById(R.id.card_view_reports)
         productManagementCard = findViewById(R.id.card_product_management)
         tipsManagementCard = findViewById(R.id.card_tips_management)
-        firebaseTestCard = findViewById(R.id.card_firebase_test)
+
     }
 
     private fun setupClickListeners() {
@@ -102,9 +102,7 @@ class AdminDashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, TipsManagementActivity::class.java))
         }
 
-        firebaseTestCard.setOnClickListener {
-            startActivity(Intent(this, FirebaseConnectionTest::class.java))
-        }
+
     }
 
     private fun loadDashboardData() {

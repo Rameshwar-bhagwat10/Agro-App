@@ -17,7 +17,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         @Volatile
-        var INSTANCE: AppDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
         // Migration from version 1 to 2: Add firestoreId column
         private val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -34,7 +34,6 @@ abstract class AppDatabase : RoomDatabase() {
                     "app_database"
                 )
                 .addMigrations(MIGRATION_1_2)
-                .fallbackToDestructiveMigration() // For development - removes this in production
                 .addCallback(AppDatabaseCallback(context))
                 .build()
                 INSTANCE = instance

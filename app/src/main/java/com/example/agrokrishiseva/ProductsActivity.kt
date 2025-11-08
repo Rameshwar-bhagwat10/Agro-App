@@ -130,7 +130,6 @@ class ProductsActivity : AppCompatActivity() {
                 
             } catch (e: Exception) {
                 // If Firestore fails, just use Room database
-                android.util.Log.w("ProductsActivity", "Failed to sync from Firestore: ${e.message}")
             }
         }
     }

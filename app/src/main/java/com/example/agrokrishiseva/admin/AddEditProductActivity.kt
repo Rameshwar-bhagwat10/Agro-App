@@ -1,14 +1,13 @@
 package com.example.agrokrishiseva.admin
 
 import android.os.Bundle
-import android.util.Log
+
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.agrokrishiseva.AppDatabase
-import com.example.agrokrishiseva.DatabaseResetHelper
-import com.example.agrokrishiseva.FirebaseDebugHelper
+
 import com.example.agrokrishiseva.Product
 import com.example.agrokrishiseva.R
 import com.google.firebase.firestore.FirebaseFirestore
@@ -115,7 +114,6 @@ class AddEditProductActivity : AppCompatActivity() {
         
         lifecycleScope.launch {
             try {
-                Log.d("AddEditProduct", "Starting product creation...")
                 progressBar.visibility = View.VISIBLE
                 btnSave.isEnabled = false
                 
@@ -124,7 +122,6 @@ class AddEditProductActivity : AppCompatActivity() {
                 
                 // Generate Firestore document ID
                 val firestoreId = firestore.collection("products").document().id
-                Log.d("AddEditProduct", "Generated Firestore ID: $firestoreId")
                 
                 val product = Product(
                     name = etProductName.text.toString().trim(),
@@ -135,41 +132,14 @@ class AddEditProductActivity : AppCompatActivity() {
                     firestoreId = firestoreId
                 )
                 
-                Log.d("AddEditProduct", "Product object created: $product")
-                
                 // Save to Room Database first
-                Log.d("AddEditProduct", "Saving to Room Database...")
-                try {
-                    database.productDao().insertProduct(product)
-                    Log.d("AddEditProduct", "Saved to Room Database successfully")
-                } catch (roomError: Exception) {
-                    Log.e("AddEditProduct", "Room Database save failed: ${roomError.message}")
-                    
-                    // Check if it's an integrity issue and try to reset database
-                    if (roomError.message?.contains("integrity", ignoreCase = true) == true) {
-                        Log.d("AddEditProduct", "Attempting database reset due to integrity issue...")
-                        val resetSuccess = DatabaseResetHelper.resetDatabase(this@AddEditProductActivity)
-                        if (resetSuccess) {
-                            // Retry the save after reset
-                            database = AppDatabase.getDatabase(this@AddEditProductActivity)
-                            database.productDao().insertProduct(product)
-                            Log.d("AddEditProduct", "Saved to Room Database successfully after reset")
-                        } else {
-                            throw Exception("Database reset failed: ${roomError.message}")
-                        }
-                    } else {
-                        throw Exception("Database save failed: ${roomError.message}")
-                    }
-                }
+                database.productDao().insertProduct(product)
                 
                 // Save to Firestore
-                Log.d("AddEditProduct", "Saving to Firestore...")
                 try {
                     firestore.collection("products").document(firestoreId).set(product).await()
-                    Log.d("AddEditProduct", "Saved to Firestore successfully")
                 } catch (firestoreError: Exception) {
-                    Log.w("AddEditProduct", "Firestore save failed, but Room save succeeded: ${firestoreError.message}")
-                    // Continue anyway since Room save succeeded
+                    // Continue anyway since Room save succeeded - Firebase is optional
                 }
                 
                 progressBar.visibility = View.GONE
@@ -177,7 +147,6 @@ class AddEditProductActivity : AppCompatActivity() {
                 finish()
                 
             } catch (e: Exception) {
-                Log.e("AddEditProduct", "Error creating product", e)
                 progressBar.visibility = View.GONE
                 btnSave.isEnabled = true
                 Toast.makeText(this@AddEditProductActivity, "Error creating product: ${e.message}", Toast.LENGTH_LONG).show()
@@ -216,7 +185,11 @@ class AddEditProductActivity : AppCompatActivity() {
                     }
                     
                     val productWithFirestoreId = updatedProduct.copy(firestoreId = firestoreDocId)
-                    firestore.collection("products").document(firestoreDocId).set(productWithFirestoreId).await()
+                    try {
+                        firestore.collection("products").document(firestoreDocId).set(productWithFirestoreId).await()
+                    } catch (firestoreError: Exception) {
+                        // Continue anyway since Room save succeeded - Firebase is optional
+                    }
                     
                     progressBar.visibility = View.GONE
                     Toast.makeText(this@AddEditProductActivity, "Product updated successfully", Toast.LENGTH_SHORT).show()

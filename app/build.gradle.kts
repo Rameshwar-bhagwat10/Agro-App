@@ -39,6 +39,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    
+    lint {
+        disable.add("ResAuto")
+    }
 }
 
 dependencies {

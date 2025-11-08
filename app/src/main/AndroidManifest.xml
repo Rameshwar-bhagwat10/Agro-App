@@ -36,8 +36,7 @@
         <activity android:name=".ProductDetailsActivity" android:exported="false" />
         <activity android:name=".TipsActivity" android:exported="false" />
         <activity android:name=".TipDetailsActivity" android:exported="false" />
-        <activity android:name=".FirebaseTestActivity" android:exported="false" />
-        <activity android:name=".FirebaseConnectionTest" android:exported="false" />
+
         
         <!-- Admin Activities -->
         <activity
